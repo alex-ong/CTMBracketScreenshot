@@ -52,7 +52,7 @@ def convertPdf(path, name, cropRect):
     print ("Opening " + path)
     filename = os.path.basename(path)
     images = convert_from_path(path,dpi=400)
-    #onlh get first page!
+    #only get first page!
     image = images[0]
         
     print("Saving " + name)
