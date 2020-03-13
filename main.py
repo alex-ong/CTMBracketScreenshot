@@ -4,9 +4,7 @@ import certifi
 import PIL
 import sys
 import os
-
-SPREADSHEET_ID = "1VlI8JQOopeeV2xnqvr7Zy6QB1K6krkJ90L_RbXtzVJo"
-SHEET_ID = "0"
+import json
 
 OPTS = ("/export?format=pdf&portrait=false" +
        "&size=A4" + 
@@ -15,8 +13,8 @@ OPTS = ("/export?format=pdf&portrait=false" +
        "&left_margin=0.00" +
        "&right_margin=0.00" +
        "&scale=4")
-test = "https://docs.google.com/spreadsheets/d/1VlI8JQOopeeV2xnqvr7Zy6QB1K6krkJ90L_RbXtzVJo/export?format=pdf&portrait=false&size=A4&top_margin=0.00&bottom_margin=0.00&left_margin=0.00&right_margin=0.00&scale=4&gid=0"       
-def downloadfile(output, spreadsheetID, sheetID=0):
+def downloadFile(output, spreadsheetID, sheetID=0):
+    print ("Downloading sheet...")
     url = ("https://docs.google.com/spreadsheets/d/" + spreadsheetID + 
             OPTS + "&gid=" + str(sheetID))    
     
@@ -63,9 +61,23 @@ def convertPdf(path, name, cropRect):
     image = image.crop(newRect)
     image.save(name)
 
-        
+def processConfig(configName):
+    with open(configName) as f:
+        data = json.load(f)
+    
+    for sectionName in data:
+        section = data[sectionName]
+        spreadsheetID = section['spreadsheet_id']
+        sheetID = section['sheet_id']
+        pdfName = 'output/' + sectionName+'.pdf'
+        downloadFile(pdfName,spreadsheetID,sheetID)
+        images = section['images']
+        for image in images:
+            convertPdf(pdfName, 'output/'+image, images[image])
+            
 if __name__ == '__main__':
-    name = 'ctmcc.pdf'
-    #downloadfile(name, SPREADSHEET_ID,SHEET_ID)
-    convertPdf(name, 'CTMCC winners.png', [0.05,0.0,0.9,0.685])
-    convertPdf(name, 'CTMCC losers.png', [0.05,0.685,0.75,1.0])
+    try:
+        os.mkdir('output')
+    except:
+        pass
+    processConfig('config.json')
