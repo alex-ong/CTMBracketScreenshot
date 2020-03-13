@@ -5,6 +5,8 @@ import PIL
 import sys
 import os
 import json
+import re
+
 
 OPTS = ("/export?format=pdf&portrait=false" +
        "&size=A4" + 
@@ -14,6 +16,11 @@ OPTS = ("/export?format=pdf&portrait=false" +
        "&right_margin=0.00" +
        "&scale=4")
 def downloadFile(output, spreadsheetID, sheetID=0):
+    if str(int(sheetID)) !=  str(sheetID):
+        raise ValueError("Invalid sheet ID")
+    if not re.match(r'^\w+$', spreadsheetID):
+        raise ValueError("Invalid spreadsheet ID")
+
     print ("Downloading sheet...")
     url = ("https://docs.google.com/spreadsheets/d/" + spreadsheetID + 
             OPTS + "&gid=" + str(sheetID))    

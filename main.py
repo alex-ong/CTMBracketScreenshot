@@ -1,7 +1,10 @@
 import cherrypy
+import traceback
+
 from cherrypy.lib.static import serve_file
 
 from screenshot import processConfig
+import sys
 
 class HelloWorld(object):
     @cherrypy.expose
@@ -15,8 +18,9 @@ class HelloWorld(object):
         input_json = cherrypy.request.json
         try:
             result = processConfig(input_json)
-        except:
-            return {"Error":"Somewhere"}
+        except Exception:
+            error_msg = traceback.format_exc()
+            return {"Error": str(error_msg)}
         result = {"files":result}
         return result
 
