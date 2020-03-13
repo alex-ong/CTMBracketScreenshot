@@ -1,4 +1,6 @@
 import cherrypy
+from cherrypy.lib.static import serve_file
+
 from screenshot import processConfig
 
 class HelloWorld(object):
@@ -18,5 +20,22 @@ class HelloWorld(object):
         result = {"files":result}
         return result
 
+
 if __name__ == '__main__':
-    cherrypy.quickstart(HelloWorld())
+    # enable file serving on the "output" directory
+    import os
+    
+    fileServe = os.path.dirname(os.path.abspath(__file__))+'/output/'
+
+    try:
+        os.mkdir(fileServe)
+    except:
+        pass
+
+    conf = {
+        '/output': {
+            'tools.staticdir.on' : True,
+            'tools.staticdir.dir' : fileServe
+        }
+    }
+    cherrypy.quickstart(HelloWorld(), "/", conf)
