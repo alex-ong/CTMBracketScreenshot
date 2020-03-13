@@ -24,5 +24,7 @@ poppler-utils
 Installation (Alternate)
 ===
 You could also use conda:
+```
 conda install -c conda-forge poppler
 pip install -r requirements.txt
+```
