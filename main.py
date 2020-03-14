@@ -40,6 +40,10 @@ if __name__ == '__main__':
         '/output': {
             'tools.staticdir.on' : True,
             'tools.staticdir.dir' : fileServe
+        },
+        'global': {
+            'server.socket_host': '0.0.0.0',
+            'server.socket_port': 8080
         }
     }
     cherrypy.quickstart(HelloWorld(), "/", conf)
