@@ -24,22 +24,21 @@ def downloadFile(output, spreadsheetID, sheetID=0):
     print ("Downloading sheet...")
     url = ("https://docs.google.com/spreadsheets/d/" + spreadsheetID + 
             OPTS + "&gid=" + str(sheetID))    
-    
-    file = open(output, 'wb')
+    print(url)
+    with open(output, 'wb') as file:    
+        crl = pycurl.Curl() 
+        crl.setopt(crl.CAINFO,certifi.where())
+        # Set URL value
+        crl.setopt(crl.URL, url)        
+        crl.setopt(crl.FOLLOWLOCATION, True)
+        # Write bytes that are utf-8 encoded
+        crl.setopt(crl.WRITEDATA, file)
 
-    crl = pycurl.Curl() 
-    crl.setopt(crl.CAINFO,certifi.where())
-    # Set URL value
-    crl.setopt(crl.URL, url)
+        # Perform a file transfer 
+        crl.perform() 
 
-    # Write bytes that are utf-8 encoded
-    crl.setopt(crl.WRITEDATA, file)
-
-    # Perform a file transfer 
-    crl.perform() 
-
-    # End curl session
-    crl.close()
+        # End curl session
+        crl.close()
 
 
 
